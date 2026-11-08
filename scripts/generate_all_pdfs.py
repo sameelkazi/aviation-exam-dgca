@@ -380,6 +380,111 @@ def generate_notes_pdf(output_path):
         story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0D47A1"), spaceAfter=8))
 
         # Extract lines
+        def remove_latex_wrappers(s):
+            cmds = ['mathbf', 'text', 'mathrm', 'mathit', 'textbf', 'textit']
+            for cmd in cmds:
+                prefix = f"\\{cmd}{{"
+                while prefix in s:
+                    idx = s.find(prefix)
+                    start_brace = idx + len(prefix) - 1
+                    depth = 1
+                    i = start_brace + 1
+                    while i < len(s) and depth > 0:
+                        if s[i] == '{': depth += 1
+                        elif s[i] == '}': depth -= 1
+                        i += 1
+                    if depth == 0:
+                        inner = s[start_brace + 1 : i - 1]
+                        s = s[:idx] + inner + s[i:]
+                    else:
+                        s = s[:idx] + s[idx + len(prefix):]
+            return s
+
+        def clean_latex(s):
+            # 1. Remove math delimiters $$ and $
+            s = re.sub(r'\$\$(.*?)\$\$', r'\1', s, flags=re.DOTALL)
+            s = re.sub(r'\$(.*?)\$', r'\1', s)
+            
+            # 2. Degrees before superscripts
+            s = s.replace(r'^\circ', '°').replace(r'\circ', '°')
+            
+            # 3. Unwrap commands like \mathbf{...}, \text{...}
+            s = remove_latex_wrappers(s)
+            
+            # 4. Handle \frac{A}{B}
+            while r'\frac{' in s:
+                idx = s.find(r'\frac{')
+                start1 = idx + 5
+                depth = 1
+                i = start1 + 1
+                while i < len(s) and depth > 0:
+                    if s[i] == '{': depth += 1
+                    elif s[i] == '}': depth -= 1
+                    i += 1
+                if depth == 0:
+                    num = s[start1 + 1 : i - 1]
+                    if i < len(s) and s[i] == '{':
+                        start2 = i
+                        depth = 1
+                        j = start2 + 1
+                        while j < len(s) and depth > 0:
+                            if s[j] == '{': depth += 1
+                            elif s[j] == '}': depth -= 1
+                            j += 1
+                        if depth == 0:
+                            den = s[start2 + 1 : j - 1]
+                            s = s[:idx] + f"({num} / {den})" + s[j:]
+                            continue
+                break
+
+            # 5. Operators and keywords
+            s = re.sub(r'\\left\(', '(', s)
+            s = re.sub(r'\\right\)', ')', s)
+            s = re.sub(r'\\left\[', '[', s)
+            s = re.sub(r'\\right\]', ']', s)
+            s = re.sub(r'\\left\\\{', '{', s)
+            s = re.sub(r'\\right\\\}', '}', s)
+            
+            s = re.sub(r'\\implies\b', ' => ', s)
+            s = re.sub(r'\\to\b', ' -> ', s)
+            s = re.sub(r'\\times\b', ' x ', s)
+            s = re.sub(r'\\approx\b', ' ~ ', s)
+            s = re.sub(r'\\ge\b', ' >= ', s)
+            s = re.sub(r'\\le\b', ' <= ', s)
+            s = re.sub(r'\\cdot\b', ' * ', s)
+            s = re.sub(r'\\propto\b', ' proportional to ', s)
+            
+            # Greek letters
+            s = re.sub(r'\\Delta\b', 'Delta ', s)
+            s = re.sub(r'\\Omega\b', 'Omega ', s)
+            s = re.sub(r'\\omega\b', 'omega ', s)
+            s = re.sub(r'\\phi\b', 'phi ', s)
+            s = re.sub(r'\\rho\b', 'rho ', s)
+            s = re.sub(r'\\theta\b', 'theta ', s)
+            s = re.sub(r'\\alpha\b', 'alpha ', s)
+            s = re.sub(r'\\lambda\b', 'lambda ', s)
+            s = re.sub(r'\\quad\b', ' ', s)
+            s = re.sub(r'\\qquad\b', ' ', s)
+            s = re.sub(r'\\sin\b', 'sin', s)
+            s = re.sub(r'\\cos\b', 'cos', s)
+            s = re.sub(r'\\tan\b', 'tan', s)
+
+            # 6. Superscripts and Subscripts
+            s = re.sub(r'\^\{([^}]+)\}', r'<sup>\1</sup>', s)
+            s = re.sub(r'\^([0-9a-zA-Z°]+)', r'<sup>\1</sup>', s)
+            s = re.sub(r'_\{([^}]+)\}', r'<sub>\1</sub>', s)
+            s = re.sub(r'_([0-9a-zA-Z]+)', r'<sub>\1</sub>', s)
+
+            # 7. Remaining solitary backslashes before words
+            s = re.sub(r'\\([a-zA-Z]+)', r'\1', s)
+            
+            # 8. Strip isolated braces
+            s = s.replace('{', '').replace('}', '')
+            
+            # 9. Clean up excess whitespace
+            s = re.sub(r'\s+', ' ', s).strip()
+            return s
+
         lines = content.split("\n")
         in_table = False
         table_rows = []
@@ -396,7 +501,13 @@ def generate_notes_pdf(output_path):
                 parts = [p.strip() for p in line_str.split("|")[1:-1]]
                 if all(set(p).issubset({'-', ':', ' '}) for p in parts):
                     continue # separator row
-                table_rows.append([Paragraph(re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', p), styles['TableCell']) for p in parts])
+                cleaned_parts = []
+                for p in parts:
+                    cell_text = clean_latex(p)
+                    cell_text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', cell_text)
+                    cell_text = re.sub(r'\*(.+?)\*', r'<i>\1</i>', cell_text)
+                    cleaned_parts.append(Paragraph(cell_text, styles['TableCell']))
+                table_rows.append(cleaned_parts)
                 in_table = True
                 continue
             elif in_table:
@@ -415,31 +526,23 @@ def generate_notes_pdf(output_path):
                 in_table = False
                 table_rows = []
 
-            def clean_latex_math(match):
-                raw = match.group(1)
-                s = raw
-                s = s.replace(r'\times', ' x ').replace(r'\approx', ' ~ ').replace(r'\ge', ' >= ').replace(r'\le', ' <= ').replace(r'\cdot', ' * ').replace(r'\propto', ' proportional to ')
-                s = s.replace(r'\Delta', 'Delta ').replace(r'\Omega', 'Omega ').replace(r'\omega', 'omega ')
-                s = s.replace(r'\phi', 'phi ').replace(r'\rho', 'rho ').replace(r'\theta', 'theta ')
-                s = s.replace(r'\circ', '°')
-                s = re.sub(r'\\text\{(.+?)\}', r'\1', s)
-                s = re.sub(r'\^\{?([0-9a-zA-Z+-]+)\}?', r'<sup>\1</sup>', s)
-                s = re.sub(r'_\{?([0-9a-zA-Z+-]+)\}?', r'<sub>\1</sub>', s)
-                s = re.sub(r'\\frac\{(.+?)\}\{(.+?)\}', r'(\1 / \2)', s)
-                return f"<b>{s.strip()}</b>"
+            # Check if this line is a standalone formula block ($$...$$)
+            is_formula_block = line_str.startswith("$$") and line_str.endswith("$$")
 
-            # Format bullet points
-            clean_line = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', line_str)
+            # Clean LaTeX & markdown formatting
+            clean_line = clean_latex(line_str)
+            clean_line = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', clean_line)
             clean_line = re.sub(r'\*(.+?)\*', r'<i>\1</i>', clean_line)
-            clean_line = re.sub(r'\$(.+?)\$', clean_latex_math, clean_line)
 
-            if line_str.startswith("* ") or line_str.startswith("- "):
-                bullet_content = clean_line[2:]
+            if is_formula_block:
+                story.append(Paragraph(f"• Formula: <b>{clean_line}</b>", styles['FormulaBox']))
+            elif line_str.startswith("* ") or line_str.startswith("- "):
+                bullet_content = clean_line[2:] if clean_line.startswith("* ") or clean_line.startswith("- ") else clean_line
                 story.append(Paragraph(f"• {bullet_content}", styles['BulletCustom']))
-            elif line_str.startswith("1. ") or line_str.startswith("2. ") or line_str.startswith("3. ") or line_str.startswith("4. ") or line_str.startswith("5. "):
+            elif re.match(r'^\d+\.\s+', line_str):
                 story.append(Paragraph(clean_line, styles['BulletCustom']))
             elif line_str.startswith("## ") or line_str.startswith("### "):
-                sub_h = line_str.replace("## ", "").replace("### ", "")
+                sub_h = clean_line.replace("## ", "").replace("### ", "")
                 story.append(Paragraph(sub_h, styles['SubSectionHeader']))
             else:
                 story.append(Paragraph(clean_line, styles['BodyCustom']))
