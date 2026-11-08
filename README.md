@@ -15,14 +15,41 @@ Synthesized directly from:
 
 ---
 
-## ⚡ Quick Access Fast-Track Guides
+## ⚡ Quick Access Fast-Track Guides & Neo-Brutalist Flight Deck
 
 | Resource | Description | Direct Link |
 |:---|:---|:---|
-| 📐 **Master Formula & Cheat Sheet** | All formulas, ISA constants, altimetry rules, lapse rates, density altitude, wind components & 15 golden mnemonics | [`FORMULA_CHEAT_SHEET.md`](FORMULA_CHEAT_SHEET.md) |
-| 📡 **METAR & TAF Master Decoder** | Complete aviation weather report & forecast decoder, CAVOK criteria, RVR, TREND & SIGMET codes with 10 solved drills | [`METAR_TAF_DECODER_GUIDE.md`](METAR_TAF_DECODER_GUIDE.md) |
+| 🕹️ **Neo-Brutalist Flight Deck Web App** | Full interactive cockpit web app for **Capt. Daivam Mehta** (50-Q Mock simulator, Live METAR decoder, flight computers, mnemonics) | **[Launch Web App (`npm run dev`)](#-neo-brutalist-web-application-vercel-ready)** |
+| 📥 **01. Formula Cheat Sheet (PDF)** | 2-page printable vector cheat sheet with ISA rules, altimetry conversions & 15 golden mnemonics | [`public/downloads/01_DGCA_Formula_Cheat_Sheet_Daivam_Mehta.pdf`](public/downloads/01_DGCA_Formula_Cheat_Sheet_Daivam_Mehta.pdf) |
+| 📥 **02. METAR & TAF Decoder Guide (PDF)** | 2-page printable guide with weather code tables, CAVOK rules & 10 solved airport drills | [`public/downloads/02_METAR_TAF_Decoder_Guide_Daivam_Mehta.pdf`](public/downloads/02_METAR_TAF_Decoder_Guide_Daivam_Mehta.pdf) |
+| 📥 **03. Complete 21-Chapter Handbook (PDF)** | 45-page comprehensive theory and revision handbook | [`public/downloads/03_Complete_Theory_Notes_21_Chapters.pdf`](public/downloads/03_Complete_Theory_Notes_21_Chapters.pdf) |
+| 📥 **04. 818 Questions Bank & Solutions (PDF)**| 128-page complete question bank with verified answers | [`public/downloads/04_DGCA_818_Questions_Bank_with_Answers.pdf`](public/downloads/04_DGCA_818_Questions_Bank_with_Answers.pdf) |
+| 📐 **Master Formula Cheat Sheet (MD)** | Mathematical constants, lapse rates, density altitude, wind components & 15 mnemonics | [`FORMULA_CHEAT_SHEET.md`](FORMULA_CHEAT_SHEET.md) |
+| 📡 **METAR & TAF Master Decoder (MD)** | Markdown reference guide with full weather codes and examples | [`METAR_TAF_DECODER_GUIDE.md`](METAR_TAF_DECODER_GUIDE.md) |
 | 💻 **Interactive CLI Quiz Engine** | Terminal-based mock test simulator (50-Q Full DGCA Mock, 10-Q Sprints, or Topic-wise tests) | [`scripts/interactive_quiz.py`](scripts/interactive_quiz.py) |
 | 📦 **Master Question Bank JSON** | 818 structured questions with parsed options and answer keys | [`question_bank/VOLARE_ALL_QUESTIONS.json`](question_bank/VOLARE_ALL_QUESTIONS.json) |
+
+---
+
+## 🚀 Neo-Brutalist Web Application (Vercel Ready)
+
+Built using **Vite + React** with custom Neo-Brutalist aviation flight deck aesthetics (bold 3.5px borders, hard drop shadows, radar greens, electric caution yellows):
+
+### How to Run Locally:
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+# -> Opens http://localhost:3000
+```
+
+### How to Deploy to Vercel:
+1. Push to GitHub repository: `https://github.com/sameelkazi/aviation-exam-dgca`.
+2. Go to **[vercel.com/new](https://vercel.com/new)** and import the repository.
+3. Vercel automatically detects the Vite configuration and builds from `npm run build` with output directory `dist`.
+4. Your site will be live instantly with global CDN and SSL!
 
 ---
 
