@@ -327,14 +327,21 @@ export default function QuizSimulator() {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {Object.entries(currentQ.options || {}).map(([key, text]) => {
               const isSelected = userAnswers[currentIndex] === key;
+              const hasAnswered = userAnswers[currentIndex] !== undefined;
               let extraClass = '';
-              if (isSelected) extraClass = 'selected';
 
-              // If practice mode or revealed
-              if (showAnswerInstantly && isSelected) {
-                extraClass = (key === currentQ.answer) ? 'correct' : 'wrong';
-              } else if (showAnswerInstantly && key === currentQ.answer) {
-                extraClass = 'correct';
+              if (hasAnswered) {
+                if (showAnswerInstantly) {
+                  // In practice mode: evaluate ONLY after user makes a choice!
+                  if (isSelected) {
+                    extraClass = (key === currentQ.answer) ? 'correct' : 'wrong';
+                  } else if (key === currentQ.answer) {
+                    extraClass = 'correct';
+                  }
+                } else if (isSelected) {
+                  // In exam mode: only highlight selected
+                  extraClass = 'selected';
+                }
               }
 
               return (
