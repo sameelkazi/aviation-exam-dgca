@@ -48,48 +48,56 @@ export default function CockpitHeader({ currentTab, setTab }) {
             </p>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>
-            <div className="brutal-badge" style={{ background: '#00E676', color: '#000', fontSize: '0.85rem' }}>
-              ✓ 818 DGCA QUESTIONS LOADED
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-start' }}>
+            <div className="brutal-badge" style={{ background: '#00E676', color: '#000', fontSize: '0.8rem' }}>
+              ✓ 818 DGCA QUESTIONS
             </div>
-            <div className="brutal-badge" style={{ background: '#FFF', color: '#000' }}>
+            <div className="brutal-badge" style={{ background: '#FFF', color: '#000', fontSize: '0.8rem' }}>
               ✓ IC JOSHI 7TH ED. + NOTES
             </div>
-            <div className="brutal-badge" style={{ background: '#FF4757', color: '#FFF' }}>
+            <div className="brutal-badge" style={{ background: '#FF4757', color: '#FFF', fontSize: '0.8rem' }}>
               ✓ 15 GOLDEN MNEMONICS
             </div>
           </div>
         </div>
 
-        {/* Action Bar inside Hero */}
-        <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '2px solid #000', display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
+        {/* Action Bar inside Hero - Responsive Touch Grid */}
+        <div style={{ 
+          marginTop: '1.25rem', 
+          paddingTop: '1rem', 
+          borderTop: '2px solid #000', 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
+          gap: '0.6rem', 
+          width: '100%' 
+        }}>
           <button 
             className="brutal-btn brutal-btn-white" 
-            style={{ fontSize: '0.85rem', padding: '0.45rem 0.9rem' }}
+            style={{ fontSize: '0.8rem', padding: '0.5rem 0.75rem', width: '100%' }}
             onClick={() => setTab('quiz')}
           >
-            🎯 START 50-Q MOCK TEST
+            🎯 50-Q MOCK
           </button>
           <button 
             className="brutal-btn brutal-btn-cyan" 
-            style={{ fontSize: '0.85rem', padding: '0.45rem 0.9rem' }}
+            style={{ fontSize: '0.8rem', padding: '0.5rem 0.75rem', width: '100%' }}
             onClick={() => setTab('metar')}
           >
-            📡 DECODE LIVE METAR
+            📡 LIVE METAR
           </button>
           <button 
             className="brutal-btn brutal-btn-green" 
-            style={{ fontSize: '0.85rem', padding: '0.45rem 0.9rem' }}
+            style={{ fontSize: '0.8rem', padding: '0.5rem 0.75rem', width: '100%' }}
             onClick={() => setTab('calc')}
           >
-            📐 FLIGHT CALCULATORS
+            📐 CALCULATORS
           </button>
           <button 
             className="brutal-btn brutal-btn-red" 
-            style={{ fontSize: '0.85rem', padding: '0.45rem 0.9rem' }}
+            style={{ fontSize: '0.8rem', padding: '0.5rem 0.75rem', width: '100%' }}
             onClick={() => setTab('downloads')}
           >
-            📥 DOWNLOAD 4 PDFS
+            📥 4 PDFS
           </button>
         </div>
       </div>

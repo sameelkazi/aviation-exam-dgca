@@ -303,7 +303,7 @@ export default function QuizSimulator() {
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 280px', gap: '1.25rem' }}>
+      <div className="quiz-exam-layout">
         {/* Left Column: Active Question */}
         <div className="brutal-card" style={{ background: '#FFFFFF' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>

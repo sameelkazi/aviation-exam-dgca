@@ -415,10 +415,23 @@ def generate_notes_pdf(output_path):
                 in_table = False
                 table_rows = []
 
+            def clean_latex_math(match):
+                raw = match.group(1)
+                s = raw
+                s = s.replace(r'\times', ' x ').replace(r'\approx', ' ~ ').replace(r'\ge', ' >= ').replace(r'\le', ' <= ').replace(r'\cdot', ' * ').replace(r'\propto', ' proportional to ')
+                s = s.replace(r'\Delta', 'Delta ').replace(r'\Omega', 'Omega ').replace(r'\omega', 'omega ')
+                s = s.replace(r'\phi', 'phi ').replace(r'\rho', 'rho ').replace(r'\theta', 'theta ')
+                s = s.replace(r'\circ', '°')
+                s = re.sub(r'\\text\{(.+?)\}', r'\1', s)
+                s = re.sub(r'\^\{?([0-9a-zA-Z+-]+)\}?', r'<sup>\1</sup>', s)
+                s = re.sub(r'_\{?([0-9a-zA-Z+-]+)\}?', r'<sub>\1</sub>', s)
+                s = re.sub(r'\\frac\{(.+?)\}\{(.+?)\}', r'(\1 / \2)', s)
+                return f"<b>{s.strip()}</b>"
+
             # Format bullet points
             clean_line = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', line_str)
             clean_line = re.sub(r'\*(.+?)\*', r'<i>\1</i>', clean_line)
-            clean_line = re.sub(r'\$(.+?)\$', r'<b>\1</b>', clean_line) # replace latex symbols
+            clean_line = re.sub(r'\$(.+?)\$', clean_latex_math, clean_line)
 
             if line_str.startswith("* ") or line_str.startswith("- "):
                 bullet_content = clean_line[2:]

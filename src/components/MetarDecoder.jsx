@@ -133,7 +133,7 @@ export default function MetarDecoder() {
           </span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '0.85rem' }}>
           {/* Station & Time */}
           <div className="brutal-card" style={{ background: '#FFF' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 900, marginBottom: '6px', color: '#0D47A1' }}>
