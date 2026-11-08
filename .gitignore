@@ -1,0 +1,23 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Scratch & temporary extraction directories
+scratch/
+.tempmediaStorage/
+.agents/
+
+# Large binary PDFs (>100MB breaks GitHub push limit)
+# The complete theory, tables, questions, formulas, and mock exams have been parsed into markdown & JSON
+*.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
